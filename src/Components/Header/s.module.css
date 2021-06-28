@@ -1,0 +1,13 @@
+.header {
+  background-color: rgb(240, 240, 240);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.link {
+  padding: 20px 10px;
+}
+.active {
+  font-weight: bold;
+}

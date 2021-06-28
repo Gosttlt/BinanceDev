@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+<!-- @format -->
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ориентировочное время выполнения 4-8 часов
 
-## Available Scripts
+Разработать SPA приложение по заданию ниже.
+В качестве фреймворка предпочтительнее использовать vue.js. Но также рассматриваем кандидатов с выполненным заданием на react или angular.
+В качестве сборщика предпочтительнее использовать Webpack.
 
-In the project directory, you can run:
+--- ПРИЛОЖЕНИЕ и ЯДРО ---
 
-### `npm start`
+Разработать родительское приложение, которое послужит контейнером для подключения дочерних блоков с бизнес-логикой.
+В состав контейнера должны войти хидер с меню из двух страниц и область для загрузки контента под каждую страницу (блоков).
+Контент дочерних блоков должен подгружаться динамически с отложенной загрузкой (отдельным бандлом).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Далее необходимо разработать мини-ядро, которое будет грузиться вместе с родительским приложенияем и иметь api для загрузки дополнительных плагинов. Ядро должно быть доступно из кода каждой страницы родительского приложения.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Первым плагином ядра является плагин, реализующий паттерн шина данных. Он реализует в себе глобальную на уровне приложения шину данных. Каждый компонент системы может писать в нее события или читать их из нее (посредством подписки).
 
-### `npm test`
+Вторым плагином ядра будет плагин, реализующий SDK для взимодействия с биржей binance (только 2 метода: получить биржевой стакан по определенному символу по REST и подписаться на обновления стакана по WS). (См. раздел Diff. Depth Stream в документации: https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+--- GUI КОМПОНЕНТЫ ---
 
-### `npm run build`
+В приложении на первой странице расположить компонент, который при помощи плагина ядра "SDK" забирает состояние стакана по определенному символу с биржи binance (можно применить limit=500, чтобы не тянуть стакан на всю глубину), подключается на обновления данных по ws для этого символа (по умолчанию берется по BTCUSDT) и отрисовывает стакан в подобном формате
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+|----------|----------|----------||----------|----------|----------|
+|--Amount--|--Price---|--Total---||--Amount--|--Price---|--Total---|
+|----------|----------|----------||----------|----------|----------|
+| ... | ... | ... || ... | ... | ... |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Где левые три колонки относятся к ордерам типа Bid, правые к ордерам типа Ask.
+Price и Amount (Quantity) получаются из binance. Total рассчитывается на клиенте как Price \* Amount.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Для верстки желательно использовать правила именования по БЭМу.
+Цвета и отступы можно использовать на свой вкус.
 
-### `npm run eject`
+Верстка должа быть резиновая и адаптивная для мобилки и десктопа. Breakpoint можно выбрать самостоятельно.
+В мобильной версии отображать только колонки с Price и Amount.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Таблица должна помещаться по вертикали на странице (без скрола на страница) и должна содержать свой скрол-бар.
+Скролл в таблице должен появляться по ховеру на таблицу, сама таблица и ее контент должны оставаться на месте при этом.
+Внешний вид скроллбара не принципиален. Таблица скроллится внутри, шапка остаётся на месте.
+Полоса скролл бара начинается под шапкой. При скролле значения в таблице не должны наезжать на шапку.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Компонент должен уметь:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- читать сообщение об изменении читаемого символа из плагина "шина данных". При изменении символа компонент должен очищать свое содержимое по предыдущему символу и загрузить данные по новому.
+- транслировать в шину данных в виде сообщений все примененные diff-изменения.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+На второй странице расположить компонент, содержащий в себе:
 
-## Learn More
+- DropDown перечнем символов. Их можно зашить статически BTCUSDT, BNBBTC и ETHBTC
+- Cписочный элемент
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+DropDown при изменении выбранного элемента отправляет в шину данных событие об изменении активного символа.
+Cписочный элемент читает шину данных и отображает информацию о каждом diff-изменении в новой строке.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Дополнительное задание (если успеваете):
 
-### Code Splitting
+- Релизовать SSR для приложения
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Всё, что покажется в задании непонятным или неоднозначным к трактовке, делайте на свое усмотрение, соблюдая здоровый рационализм.
+Главное - это общий полученный результат. Если возникнет непреодолимое по вашему мнению препятствие, пиши свой(и) вопрос(ы) нам. По завершении нам нужна ссылка выложенного тестового на GitHub Pages и ссылка на код.

@@ -1,0 +1,56 @@
+.rowTeble {
+  display: flex;
+  border-bottom: 1px solid #555;
+  border-left: 1px solid #555;
+}
+.last-child {
+  display: none;
+}
+
+.tableItem {
+  padding: 5px 2px;
+  border-right: 1px solid #555;
+  width: 100%;
+  text-align: center;
+  background-color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.headingTable {
+  text-align: center;
+  font-weight: 700;
+  padding: 10px 0px;
+  border: 1px solid #555;
+  background-color: rgb(240, 240, 240);
+}
+.tableBox {
+  width: fit-content;
+  margin: 5px;
+  border: 1px solid #555;
+  position: relative;
+  padding-top: 85px;
+  width: 100%;
+}
+.tableBody :hover {
+  cursor: row-resize;
+}
+
+.headerTableBox {
+  font-weight: 700;
+  border-bottom: 2px solid #555;
+  border-top: 2px solid #555;
+}
+.tableHeaderFixed {
+  position: absolute;
+  margin-top: -85px;
+  width: 100%;
+}
+.tableHeaderFixedContainer {
+  width: 100%;
+  position: relative;
+}
+.tableBody {
+  max-height: calc(100vh - 210px);
+  overflow: scroll;
+}
